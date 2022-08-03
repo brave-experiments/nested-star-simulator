@@ -13,8 +13,9 @@ import (
 )
 
 const (
-	numLocGranularities = 7
-	numCSVFields        = numLocGranularities + 1 + 1
+	numLatLonGranularities = 7
+	numLocGranularities    = numLatLonGranularities + 1
+	numCSVFields           = numLocGranularities + 1 // Account for timestamp.
 )
 
 type latLon struct {
@@ -37,7 +38,7 @@ func (f foursquareRec) String() string {
 }
 
 func (f *foursquareRec) Prepare() []string {
-	var s []string
+	s := []string{f.countryCode}
 	for _, loc := range f.locations {
 		s = append(s, fmt.Sprintf("%7f;%7f", loc.lat, loc.lon))
 	}
@@ -80,7 +81,7 @@ func parseRawRecord(record []string) (*foursquareRec, error) {
 
 	f := &foursquareRec{}
 	f.countryCode = strings.TrimSpace(record[0])
-	for i := 1; i < numLocGranularities+1; i++ {
+	for i := 1; i < numLatLonGranularities+1; i++ {
 
 		latLon, err := parseLatLon(record[i])
 		if err != nil {
