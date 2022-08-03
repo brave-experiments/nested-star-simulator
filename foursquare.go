@@ -6,12 +6,10 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 )
 
 const (
@@ -27,7 +25,6 @@ type latLon struct {
 type foursquareRec struct {
 	countryCode string
 	locations   []*latLon
-	time        time.Time
 }
 
 func (f foursquareRec) String() string {
@@ -91,15 +88,14 @@ func parseRawRecord(record []string) (*foursquareRec, error) {
 		}
 		f.locations = append(f.locations, latLon)
 	}
-	// TODO: parse time
 	return f, nil
 }
 
-func parseCSVFile(filename string, nstar *NestedSTAR, wg *sync.WaitGroup) error {
+func parseCSVFile(filename string, nstar *nestedSTAR, wg *sync.WaitGroup) error {
 	defer func() {
 		wg.Done()
 	}()
-	elog.Printf("Opening %q for processing.", filename)
+	l.Printf("Opening %q for processing.", filename)
 	fd, err := os.Open(filename)
 	if err != nil {
 		return err
@@ -114,17 +110,20 @@ func parseCSVFile(filename string, nstar *NestedSTAR, wg *sync.WaitGroup) error 
 			if err == io.EOF {
 				break
 			}
-			elog.Printf("Error reading from CSV reader: %s", err)
+			l.Printf("Error reading from CSV reader: %s", err)
 		}
 		fsRec, err := parseRawRecord(strRec)
 		if err != nil {
-			log.Printf("Error parsing Foursquare record: %s", err)
+			l.Printf("Error parsing Foursquare record: %s", err)
 		}
 		numRecs++
+		if numRecs%1000000 == 0 {
+			l.Printf("Parsed %dM records.", numRecs/1000000)
+		}
 
-		nstar.AddReports([]Report{fsRec})
+		nstar.AddRecords([]Record{fsRec})
 	}
-	elog.Printf("Parsed %d valid records.", numRecs)
+	l.Printf("Parsed %d valid records.", numRecs)
 
 	return nil
 }

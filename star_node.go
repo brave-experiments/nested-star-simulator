@@ -4,18 +4,18 @@ const (
 	rootDepth = 1
 )
 
-type NodeInfo struct {
+type nodeInfo struct {
 	Num  int
-	Next *Node
+	Next *node
 }
 
-type Node struct {
-	// E.g., "US"    -> NodeInfo{}
-	//       "Linux" -> NodeInfo{}
-	ValueToInfo map[string]*NodeInfo
+type node struct {
+	// E.g., "US"    -> nodeInfo{}
+	//       "Linux" -> nodeInfo{}
+	ValueToInfo map[string]*nodeInfo
 }
 
-func (n *Node) Aggregate(maxDepth, k int, m []string) *AggregationState {
+func (n *node) Aggregate(maxDepth, k int, m []string) *aggregationState {
 	state := NewAggregationState()
 	depth := len(m) + 1
 
@@ -32,7 +32,7 @@ func (n *Node) Aggregate(maxDepth, k int, m []string) *AggregationState {
 			continue
 		}
 		if info.Next == nil {
-			elog.Printf("ERROR: Encountered incomplete measurement: %s\n", m)
+			l.Fatalf("Encountered incomplete measurement: %s\n", m)
 			continue
 		}
 
@@ -54,10 +54,10 @@ func (n *Node) Aggregate(maxDepth, k int, m []string) *AggregationState {
 	return state
 }
 
-func (n *Node) Add(orderedMsmt []string) {
+func (n *node) Add(orderedMsmt []string) {
 	info, exists := n.ValueToInfo[orderedMsmt[0]]
 	if !exists {
-		info = &NodeInfo{Num: 1}
+		info = &nodeInfo{Num: 1}
 		n.ValueToInfo[orderedMsmt[0]] = info
 	} else {
 		info.Num++
@@ -65,7 +65,7 @@ func (n *Node) Add(orderedMsmt []string) {
 
 	if len(orderedMsmt[1:]) > 0 {
 		if info.Next == nil {
-			newNode := &Node{ValueToInfo: make(map[string]*NodeInfo)}
+			newNode := &node{ValueToInfo: make(map[string]*nodeInfo)}
 			info.Next = newNode
 			newNode.Add(orderedMsmt[1:])
 		} else {
@@ -74,7 +74,7 @@ func (n *Node) Add(orderedMsmt []string) {
 	}
 }
 
-func (n *Node) NumTags() int {
+func (n *node) NumTags() int {
 	var num = len(n.ValueToInfo)
 
 	for _, info := range n.ValueToInfo {
@@ -85,7 +85,7 @@ func (n *Node) NumTags() int {
 	return num
 }
 
-func (n *Node) NumNodes() int {
+func (n *node) NumNodes() int {
 	var num = 1
 
 	for _, info := range n.ValueToInfo {
@@ -96,7 +96,7 @@ func (n *Node) NumNodes() int {
 	return num
 }
 
-func (n *Node) NumLeafTags() int {
+func (n *node) NumLeafTags() int {
 	var num int
 
 	for _, info := range n.ValueToInfo {
