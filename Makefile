@@ -1,18 +1,17 @@
-.PHONY: all test lint clean
+.PHONY: all code data charts clean
 
-binary = nstarsim
-godeps = *.go go.mod go.sum
+all: code data charts
 
-all: test lint $(binary)
+code:
+	make -C code/
 
-test:
-	go test -cover ./...
+data:
+	make -C data/
 
-lint:
-	golangci-lint run
-
-$(binary): $(godeps)
-	go build -o $(binary)
+charts:
+	make -C charts/
 
 clean:
-	rm -f $(binary)
+	make -C code/ clean
+	make -C data/ clean
+	make -C charts/ clean
