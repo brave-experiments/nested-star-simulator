@@ -1,5 +1,6 @@
 require(ggplot2)
 require(tikzDevice)
+require(scales)
 
 args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
@@ -28,6 +29,7 @@ ggplot(data, aes(x = k,
                  shape = type)) +
     geom_point(size = 2) +
     geom_line() +
+    scale_x_continuous(labels=comma) +
     theme_minimal() +
     labs(x = "k-anonymity threshold",
          y = "\\% of records ",
