@@ -16,7 +16,7 @@ ggplot(data, aes(x = len_part_msmts,
     geom_bar(stat="identity") +
     scale_x_continuous(breaks = c(1, 2, 3, 4, 5, 6, 7, 9)) +
     theme_minimal() +
-    labs(x = "\\# of unlocked attributes",
-         y = "\\# of msmts")
+    labs(x = "\\# of unlocked lat/lon digits",
+         y = "\\# of records")
 
 dev.off()

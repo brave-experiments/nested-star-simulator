@@ -30,9 +30,9 @@ ggplot(data, aes(x = k,
     geom_line() +
     theme_minimal() +
     labs(x = "k-anonymity threshold",
-         y = "\\% of msmts",
-         color = "Msmt type",
-         linetype = "Msmt type",
-         shape = "Msmt type")
+         y = "\\% of records ",
+         color = "Record type",
+         linetype = "Record type",
+         shape = "Record type")
 
 dev.off()
