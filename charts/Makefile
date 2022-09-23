@@ -4,7 +4,8 @@ tmp = *.tex *.pdf
 data = privacy-utility-tradeoff.csv
 charts = \
 	full-vs-partial.tex \
-	len-partial-msmt.tex
+	len-partial-msmt.tex \
+	partial-rec-heatmap.tex
 
 all: $(charts)
 
