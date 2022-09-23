@@ -49,6 +49,14 @@ func frac(a, b int) float64 {
 	return float64(a) / float64(b)
 }
 
+func sumValues(m map[int]int) int {
+	total := 0
+	for _, v := range m {
+		total += v
+	}
+	return total
+}
+
 // Aggregate aggregates Nested STAR's measurements.  The argument 'numAttrs'
 // refers to the number of attributes in a record.
 func (s *nestedSTAR) Aggregate(numAttrs, k int) {
@@ -57,16 +65,24 @@ func (s *nestedSTAR) Aggregate(numAttrs, k int) {
 		l.Fatal("Number of partial measurements don't add up.")
 	}
 
-	// Determine
-	for key := 1; key <= numAttrs; key++ {
+	if len(state.LenPartialMsmts) >= numAttrs {
+		l.Fatalf("Expected < %d attributes but got %d.",
+			numAttrs, len(state.LenPartialMsmts))
+	}
+
+	// Start with partial measurements that unlocked at least 1 attribute and
+	// iterate to numAttrs-1, which are partial measurements that are only
+	// missing a single attribute.
+	totalNum := sumValues(state.LenPartialMsmts)
+	for key := 1; key < numAttrs; key++ {
 		num, exists := state.LenPartialMsmts[key]
 		if !exists {
 			num = 0
 		}
-		fmt.Printf("LenPartMsmt,%d,0,0,0,%d,%d\n",
+		fmt.Printf("LenPartMsmt,%d,0,0,0,%d,%.2f\n",
 			k,
 			key,
-			num)
+			frac(num, totalNum))
 	}
 	fracFull := frac(state.FullMsmts, s.numMeasurements) * 100
 	fracPart := frac(state.PartialMsmts, s.numMeasurements) * 100
