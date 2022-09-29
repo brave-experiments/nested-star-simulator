@@ -4,34 +4,34 @@ require(scales)
 
 args <- commandArgs(trailingOnly = TRUE)
 input_file <- args[1]
-data <- read.csv(input_file, header=TRUE)
+data <- read.csv(input_file, header = TRUE)
 
-# Only analyse our partial records.
-partial <- subset(data, type == "Partial")
+part <- subset(data, type == "Partial")
+lost <- subset(data, type == "Lost")
+full <- subset(data, type == "Full")
 
-# Turn fraction into percentage.
-partial$frac = partial$frac* 100
+# Turn fractions into percentages.
+part$pct <- part$frac * 100
+lost$pct <- lost$frac * 100
+full$pct <- full$frac * 100
 
-# Derive full measurements from partial ones.
-full <- partial
-full$frac <- 100 - full$frac
-full$type <- "Full"
+cbbPalette <- c("#000000", "#4AA3F1", "#FFC107", "#50ECD2")
 
-data <- rbind(full, partial)
+data <- rbind(rbind(full, part), lost)
 
-#cairo_pdf("full-vs-partial.pdf", width = 4, height=2.5)
-tikz(file = "full-vs-partial.tex", standAlone=F, width = 3.5, height = 2)
+cairo_pdf("full-vs-partial.pdf", width = 4, height=2.5)
+# tikz(file = "full-vs-partial.tex", standAlone=F, width = 3.5, height = 2)
 
 ggplot(data, aes(x = k,
-                 y = frac,
+                 y = pct,
                  color = type,
                  linetype = type,
                  shape = type)) +
     geom_point(size = 2) +
     geom_line() +
-    scale_x_continuous(labels=comma) +
+    scale_x_continuous(labels=comma, trans="log2") +
     theme_minimal() +
-    labs(x = "k-anonymity threshold",
+    labs(x = "k-anonymity threshold (log)",
          y = "\\% of records ",
          color = "Record type",
          linetype = "Record type",

@@ -9,35 +9,36 @@ data <- read.csv(input_file, header=TRUE)
 # Get rid of partial measurements.
 data <- subset(data, type == "LenPartMsmt")
 
-# cairo_pdf("partial-rec-heatmap.pdf", width = 5.5, height=3)
+# cairo_pdf("partial-rec-heatmap.pdf", width = 3.25, height=2.75)
 tikz(file = "partial-rec-heatmap.tex",
      standAlone=F,
-     width = 3.5,
-     height = 3)
+     width = 3.25,
+     height = 2.75)
 
 # In the Foursquare data set, we have a total of eight location attributes:
 # the country code, followed by seven lat/lon pairs of increasing granularity.
-numPartialAttrs <- seq(1, 7)
+numPartialAttrs <- seq(1, 8)
 d <- expand.grid(X = numPartialAttrs,
                  Y = unique(data$k))
 # Turn fractions into percentages.
 d$Z <- data$num_part_msmts * 100
 
-# Add a thousands separator.  Normally, we would use
-# scale_x_continuous(labels=comma) but we're dealing with a factor here, so we
-# gotta replace the string.
-yAxis <- as.factor(d$Y)
-levels(yAxis)[levels(yAxis) == "1000"] <- "1,000"
-
-ggplot(data, aes(y = yAxis,
+ggplot(data, aes(y = d$Y,
                  x = d$X,
                  fill = d$Z)) +
-       geom_tile(color = "gray") +
+       geom_tile(color = "light gray") +
        theme_minimal() +
-       scale_fill_gradient(low = "white", high = "red") +
+       scale_fill_gradient(low = "white",
+                           high = "red") +
        scale_x_discrete(limits = factor(numPartialAttrs)) +
+       scale_y_continuous(labels = comma_format(accuracy = 1),
+                          trans = "log2",
+                          breaks = c(4, 16, 64, 256, 1024, 4096, 16384, 65536)) +
+       # Disable the grid.
+       theme(panel.grid.major = element_blank(),
+             panel.grid.minor = element_blank()) +
        labs(x = "\\# of unlocked location digits",
-            y = "k-anonymity threshold",
+            y = "k-anonymity threshold (log)",
             fill = "Percentage")
 
 dev.off()
