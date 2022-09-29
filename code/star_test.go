@@ -48,8 +48,9 @@ func TestRealSTAR(t *testing.T) {
 	}
 
 	expectedLens := map[int]int{
-		2: 3,
-		1: 7,
+		3: 6, // Six measurements of length three.
+		2: 3, // Three measurements of length two.
+		1: 7, // Seven measurements of length one.
 	}
 	if !isMapEqual(state.LenPartialMsmts, expectedLens) {
 		t.Fatalf("expected %v but got %v.", expectedLens, state.LenPartialMsmts)

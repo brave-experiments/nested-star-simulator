@@ -65,21 +65,16 @@ func (s *nestedSTAR) Aggregate(numAttrs, k int) {
 		l.Fatal("Number of partial measurements don't add up.")
 	}
 
-	if len(state.LenPartialMsmts) >= numAttrs {
-		l.Fatalf("Expected < %d attributes but got %d.",
-			numAttrs, len(state.LenPartialMsmts))
-	}
-
 	// Start with partial measurements that unlocked at least 1 attribute and
 	// iterate to numAttrs-1, which are partial measurements that are only
 	// missing a single attribute.
 	totalNum := sumValues(state.LenPartialMsmts)
-	for key := 1; key < numAttrs; key++ {
+	for key := 1; key <= numAttrs; key++ {
 		num, exists := state.LenPartialMsmts[key]
 		if !exists {
 			num = 0
 		}
-		fmt.Printf("LenPartMsmt,%d,0,0,0,%d,%.2f\n",
+		fmt.Printf("LenPartMsmt,%d,0,0,0,0,%d,%.5f\n",
 			k,
 			key,
 			frac(num, totalNum))
@@ -93,11 +88,21 @@ func (s *nestedSTAR) Aggregate(numAttrs, k int) {
 		fracPart,
 		s.numMeasurements,
 		100-fracFull-fracPart)
+	lostMsmts := s.numMeasurements - state.FullMsmts - state.PartialMsmts
+	fmt.Printf("Full,%d,%d,%.5f,0,0,0,0\n",
+		k,
+		state.FullMsmts,
+		frac(state.FullMsmts, s.numMeasurements))
+	fmt.Printf("Lost,%d,%d,%.5f,0,0,0,0\n",
+		k,
+		lostMsmts,
+		frac(lostMsmts, s.numMeasurements))
 	// We only print partial measurements here because the number of full
 	// measurements is simply the number of total measurements subtracted by
 	// the number of partial measurements.
-	fmt.Printf("Partial,%d,%.3f,%d,%d,0,0\n",
+	fmt.Printf("Partial,%d,%d,%.5f,%d,%d,0,0\n",
 		k,
+		state.PartialMsmts,
 		frac(state.PartialMsmts, s.numMeasurements),
 		s.root.NumTags(),
 		s.root.NumLeafTags())
@@ -146,5 +151,5 @@ func (s *aggregationState) AddsUp() bool {
 	for _, num := range s.LenPartialMsmts {
 		totalPartial += num
 	}
-	return s.PartialMsmts == totalPartial
+	return s.PartialMsmts+s.FullMsmts == totalPartial
 }

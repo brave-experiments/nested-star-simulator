@@ -29,6 +29,7 @@ func (n *node) Aggregate(maxDepth, k int, m []string) *aggregationState {
 		// We've reached the last tag, i.e., we fully unlocked a measurement.
 		if depth == maxDepth {
 			state.FullMsmts += info.Num
+			state.AddLenTags(depth, info.Num)
 			continue
 		}
 		if info.Next == nil {
