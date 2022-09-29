@@ -34,8 +34,8 @@ func main() {
 	// aggregation.
 	wg.Wait()
 
-	fmt.Println("type,k,frac,num_tags,num_leaf_tags,len_part_msmts,num_part_msmts")
-	for _, k := range []int{5, 10, 25, 50, 75, 100, 125, 250, 375, 500, 625, 750, 875, 1000} {
+	fmt.Println("type,k,num,frac,num_tags,num_leaf_tags,len_part_msmts,num_part_msmts")
+	for _, k := range []int{2, 4, 8, 16, 32, 64, 128, 256, 512, 1024, 2048, 4096, 8192, 16384, 32768, 65536} {
 		l.Printf("Aggregating for k=%d.", k)
 		nstar.Aggregate(numLocGranularities, k)
 	}
