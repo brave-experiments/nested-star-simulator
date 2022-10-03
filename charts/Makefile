@@ -1,6 +1,6 @@
 .PHONY: all clean
 
-tmp = *.tex *.pdf
+tmp = *.tex *.pdf *.png
 data = privacy-utility-tradeoff.csv
 charts = \
 	full-vs-partial.tex \
