@@ -38,6 +38,8 @@ nested_star$pct <- nested_star$digits / num_fields * 100
 
 data <- rbind(star, nested_star)
 
+cbPalette <- c("#4AA3F1", "#FFC107", "#50ECD2")
+
 # cairo_pdf("unlocked-digits.pdf", width = 4, height=2.5)
 tikz(file = "unlocked-digits.tex", standAlone=F, width = 3.5, height = 2)
 
@@ -50,6 +52,7 @@ ggplot(data, aes(x = k,
                  shape = sys)) +
     geom_point(size = 2) +
     geom_line() +
+    scale_colour_manual(values=cbPalette) +
     scale_x_continuous(labels=comma, trans="log2") +
     theme_minimal() +
     labs(x = "k-anonymity threshold (log)",

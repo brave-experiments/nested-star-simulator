@@ -15,12 +15,12 @@ part$pct <- part$frac * 100
 lost$pct <- lost$frac * 100
 full$pct <- full$frac * 100
 
-cbbPalette <- c("#000000", "#4AA3F1", "#FFC107", "#50ECD2")
+cbPalette <- c("#4AA3F1", "#FFC107", "#50ECD2")
 
 data <- rbind(rbind(full, part), lost)
 
-cairo_pdf("full-vs-partial.pdf", width = 4, height=2.5)
-# tikz(file = "full-vs-partial.tex", standAlone=F, width = 3.5, height = 2)
+# cairo_pdf("full-vs-partial.pdf", width = 4, height=2.5)
+tikz(file = "full-vs-partial.tex", standAlone=F, width = 3.5, height = 2)
 
 ggplot(data, aes(x = k,
                  y = pct,
@@ -29,6 +29,7 @@ ggplot(data, aes(x = k,
                  shape = type)) +
     geom_point(size = 2) +
     geom_line() +
+    scale_colour_manual(values=cbPalette) +
     scale_x_continuous(labels=comma, trans="log2") +
     theme_minimal() +
     labs(x = "k-anonymity threshold (log)",
