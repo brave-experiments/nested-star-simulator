@@ -4,7 +4,6 @@ tmp = *.tex *.pdf *.png
 data = privacy-utility-tradeoff.csv
 charts = \
 	full-vs-partial.tex \
-	len-partial-msmt.tex \
 	partial-rec-heatmap.tex \
 	unlocked-digits.tex
 
