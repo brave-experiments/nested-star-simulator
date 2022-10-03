@@ -38,7 +38,7 @@ ggplot(data, aes(y = d$Y,
        theme(panel.grid.major = element_blank(),
              panel.grid.minor = element_blank()) +
        labs(x = "\\# of unlocked location digits",
-            y = "k-anonymity threshold (log)",
+            y = "$K$ (log)",
             fill = "Percentage")
 
 dev.off()

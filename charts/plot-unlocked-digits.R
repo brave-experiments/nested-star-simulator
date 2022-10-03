@@ -55,7 +55,7 @@ ggplot(data, aes(x = k,
     scale_colour_manual(values=cbPalette) +
     scale_x_continuous(labels=comma, trans="log2") +
     theme_minimal() +
-    labs(x = "k-anonymity threshold (log)",
+    labs(x = "$K$ (log)",
          y = "\\% of unlocked attributes",
          color = "System",
          linetype = "System",
