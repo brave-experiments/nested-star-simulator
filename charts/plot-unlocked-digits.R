@@ -30,8 +30,8 @@ for (cur_k in unique(data$k)) {
     star <- rbind(star, list(k=cur_k, digits=mean_digits))
 }
 
-star$sys <- "$K$-TA schemes"
-nested_star$sys <- "\tool"
+star$sys <- "tadefault schemes"
+nested_star$sys <- "tool"
 
 star$pct <- star$digits / num_fields * 100
 nested_star$pct <- nested_star$digits / num_fields * 100
